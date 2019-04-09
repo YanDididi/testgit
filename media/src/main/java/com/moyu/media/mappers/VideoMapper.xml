@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moyu.media.mappers.VideoMapper">
+    <select id="selectVideo" resultType="Video">
+        select rs.id,rs.title,rs.desc,rs.cover,rs.type,rs.path,
+        rs.category_id as categoryId,
+        rs.create_time as createTIme,
+        rs.update_time as updateTime
+          from video rs
+        where id=#{id}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(id) from video where 1=1
+        <if test="categoryId!=-1">
+            and category_id=#{categoryId}
+        </if>
+        <if test="status!=-1">
+            and status=#{status}
+        </if>
+    </select>
+
+    <select id="selectVideos" resultType="Video">
+        select v.id,v.title,v.desc,
+        v.cover,
+        v.category_id as categoryId,
+        v.create_time as createTIme,
+        v.update_time as updateTime,
+        v.path,v.type
+        from video v
+        left join Tags t on v.id = t.video_id
+        where
+        t.tag in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        <if test="categoryId!=-1">
+            and v.category_id=#{categoryId}
+        </if>
+        <if test="status!=-1">
+            and v.status=#{status}
+        </if>
+        group by v.id
+        <if test="limit>0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <insert id="insertVideo"
+            parameterType="com.moyu.media.model.Video"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into video (`title`,status,cover,`desc`,category_id,create_time,update_time,path,`type`)
+        values(#{title},#{status},#{cover},#{desc},#{categoryId},#{createTime},#{updateTime},#{path},#{type})
+    </insert>
+
+    <update id="updateVideo"
+            parameterType="com.moyu.media.model.Video">
+      update video set
+      `title`=#{title},
+      status=#{status},
+      cover=#{cover},
+      path=#{path},
+      `type`=#{type},
+      `desc`=#{desc},
+      category_id=#{categoryId},
+      update_time=#{updateTime}
+      where id=#{id}
+    </update>
+</mapper>
