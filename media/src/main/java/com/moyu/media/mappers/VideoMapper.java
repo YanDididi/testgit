@@ -17,4 +17,6 @@ public interface VideoMapper {
                              @Param("offset") int offset);
 
     int insertVideo(Video video);
+
+    int deleteVideo(@Param("list") List<Integer> idLis);
 }

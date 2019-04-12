@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moyu.media.mappers.TagsMapper">
+    <select id="selectTags" resultType="Tags">
+        select t.id,
+               t.video_id as videoId,
+               t.tag
+          from Tags t
+        where t.id=#{id}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(id) from Tags t where 1=1
+        <if test="videoId !=-1 ">
+            and t.video_id=#{videoId}
+        </if>
+    </select>
+
+    <select id="getTagsLisByV" resultType="Tags">
+        select t.id,t.video_id as videoId,t.tag
+        from Tags t
+        left join video v on t.video_id=v.id
+        where
+        <choose>
+            <when test="list == null">
+                1=1
+            </when>
+            <otherwise>
+                t.tag in
+                <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </otherwise>
+        </choose>
+        <if test="videoId !=-1 ">
+            and t.video_id=#{videoId}
+        </if>
+        <if test="limit>0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="getVideoLisByTagNobing" resultType="Tags">
+        select v.* from video v where v.id not in
+
+        (select v.id
+        from Tags t
+        RIGHT join video v on t.video_id=v.id
+        where t.tag=#{tagsId}
+        GROUP BY v.id )
+        <if test="limit>0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="getVideoCountLisByTagNobing" resultType="Integer">
+        select COUNT(*)  from video v where v.id not in
+
+        (select v.id
+        from Tags t
+        RIGHT join video v on t.video_id=v.id
+        where t.tag=#{tagsId}
+        GROUP BY v.id )
+    </select>
+
+    <select id="getVideoLisByTagbing" resultType="Tags">
+        select v.*
+        from Tags t
+        RIGHT join video v on t.video_id=v.id
+        where t.tag=#{tagsId}
+        GROUP BY v.id
+        <if test="limit>0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="getVideoCountLisByTagbing" resultType="Integer">
+        select COUNT(*)  from video v where v.id in
+        (select v.id
+        from Tags t
+        RIGHT join video v on t.video_id=v.id
+        where t.tag=#{tagsId}
+        GROUP BY v.id )
+    </select>
+
+    <insert id="insertTags"
+            parameterType="com.moyu.media.model.Tags"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into Tags (video_id,tag)
+        values(#{videoId},#{tag})
+    </insert>
+
+    <update id="updateTags"
+            parameterType="com.moyu.media.model.Tags">
+      update Tags t set
+      video_id=#{videoId},
+      tag=#{tag}
+      where t.id=#{id}
+    </update>
+
+
+    <delete id="deleteTags">
+        delete from Tags t
+        where t.id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTagsByV">
+        delete from Tags
+        where 1=1 and video_id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="addTagsByV"
+            parameterType="com.moyu.media.model.Tags"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into Tags (video_id,tag) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.videoId},#{item.tag})
+        </foreach>
+    </insert>
+
+
+
+</mapper>

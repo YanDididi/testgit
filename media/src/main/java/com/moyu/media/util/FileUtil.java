@@ -1,5 +1,9 @@
 package com.moyu.media.util;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -22,4 +26,21 @@ public class FileUtil {
         out.flush();
         out.close();
     }
+
+    public static void delFile(String filePath) throws Exception{
+        File file=new File(filePath);
+        if(file.exists()&&file.isFile())
+            file.delete();
+    }
+
+    /*public static void delFile(String filePath, String fileName) throws Exception{
+        File file=new File(filePath+"/"+fileName);
+        if(file.exists()&&file.isFile())
+            file.delete();
+    }*/
+
+
+
+
+
 }

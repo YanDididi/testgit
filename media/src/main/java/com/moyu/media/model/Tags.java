@@ -8,6 +8,7 @@ public class Tags {
     int videoId;
     int tag;
 
+
     public enum Tag {
         RECOMMEND(1),
         CHOICE(2),
@@ -43,4 +44,5 @@ public class Tags {
     public void setTag(int tag) {
         this.tag = tag;
     }
+
 }
