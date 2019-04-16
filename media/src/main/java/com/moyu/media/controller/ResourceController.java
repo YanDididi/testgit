@@ -124,13 +124,14 @@ public class ResourceController {
             for (int i = 0; i < vIds.size(); i++) {
                 int vId = vIds.get(i).get("id");
                 video = resourceMapper.selectVideo(vId);
-                videoPath=tPath+video.getPath();coverPath=tPath+video.getCover();
-                FileUtil.delFile(videoPath);
-                FileUtil.delFile(coverPath);
+                if(null != video){
+                    videoPath=tPath+video.getPath();coverPath=tPath+video.getCover();
+                    FileUtil.delFile(videoPath);
+                    FileUtil.delFile(coverPath);
+                }
                 vidLis.add(vId);
             }
-
-            tagsMapper.deleteTagsByV(vidLis);
+            tagsMapper.deleteTagsByV(-1,vidLis);
             if (resourceMapper.deleteVideo(vidLis) > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();

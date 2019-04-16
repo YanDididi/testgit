@@ -1,0 +1,94 @@
+1.接口名称:
+	url:'/controller/tags/{id}',
+	请求方式:'GET',
+	参数:{
+		id:'11',
+	}
+	返回:{
+  "status": 1,
+  "code": 200,
+  "msg": null,
+  "data": {
+    "id": 11,
+    "videoId": 6,
+    "tag": 4
+  }
+}
+备注:无
+
+2.接口名称:
+	url:'/controller/addTags',
+	请求方式:'POST',
+	参数:{
+		{"videoId":3,"tag":1}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+3.接口名称:
+	url:'/controller/updateTags',
+	请求方式:'PUT',
+	参数:{
+		{"id":48,"videoId":4,"tag":4}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+4.接口名称:
+	url:'/controller/delTags',
+	请求方式:'DELETE',
+	参数:{
+		{"id": [{"id": 42},{"id": 43},{"id": 44},{"id": 48}]}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+5.接口名称:
+	url:'/controller/deleteTagsByV',
+	请求方式:'DELETE',
+	参数:{
+		tag:'1';{"id": [{"id": 8},{"id": 9},{"id": 10}]}
+	}
+
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+7.接口名称:
+	url:'/controller/addTagsByV',
+	请求方式:'POST',
+	参数:{
+		[{"videoId": 1,"tag": 3},{"videoId": 2,"tag": 3},{"videoId": 3,"tag": 3}]
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+

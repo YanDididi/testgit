@@ -13,7 +13,7 @@ public interface TagsMapper {
     int updateTags(Tags tags);
     int selectCount(@Param("videoId") int videoId);
 
-    int deleteTagsByV(@Param("list") List<Integer> vidLis);
+    int deleteTagsByV(@Param("tag") int tag,@Param("list") List<Integer> vidLis);
     int addTagsByV(@Param("list") List<Tags> TagsLis);
     int deleteTags(@Param("list") List<Integer> idLis);
 

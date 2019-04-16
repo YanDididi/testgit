@@ -59,7 +59,7 @@ public class TagsController {
 
     @RequestMapping(path = {"/controller/updateTags"}, method = RequestMethod.PUT)
     public Result updateTags(@RequestBody Map<String, Object> map) {
-        String[] needParams = {"videoId", "tag"};
+        String[] needParams = {"id","videoId", "tag"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
@@ -116,7 +116,7 @@ public class TagsController {
     }
 
     @RequestMapping(path = {"/controller/deleteTagsByV"}, method = RequestMethod.DELETE)
-    public Result deleteTagsByV(@RequestParam(value = "tagsId", required = false, defaultValue = "-1") int tagId,@RequestBody Map<String, Object> map) {
+    public Result deleteTagsByV(@RequestParam(value = "tag", required = false, defaultValue = "-1") int tag,@RequestBody Map<String, Object> map) {
         String[] needParams = {"id"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
@@ -132,7 +132,7 @@ public class TagsController {
                 int vId = vIds.get(i).get("id");
                 vidLis.add(vId);
             }
-            int result1 = tagsMapper.deleteTagsByV(vidLis);
+            int result1 = tagsMapper.deleteTagsByV(tag,vidLis);
             //int result2 = resourceMapper.deleteVideo(vidLis);
             if (result1 > 0 ) {
                 sqlSession.commit();
@@ -173,7 +173,6 @@ public class TagsController {
                                 /*@RequestBody(required = false) Map<String, Object> map,*/
                                 @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
-
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {

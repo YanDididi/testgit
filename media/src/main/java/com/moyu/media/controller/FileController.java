@@ -62,7 +62,8 @@ public class FileController {
             }
 //            System.getProperty("file.separator")
             targetPath += rootDirName;
-            FileUtil.uploadFile(file.getBytes(), targetPath, fileName, isNeedUnCompress);
+//            FileUtil.uploadFile(file.getBytes(), targetPath, fileName, isNeedUnCompress);
+            FileUtil.uploadBigFile(file, targetPath, fileName);
 
         } catch (Exception e) {
             e.printStackTrace();

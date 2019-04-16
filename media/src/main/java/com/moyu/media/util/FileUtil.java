@@ -1,9 +1,8 @@
 package com.moyu.media.util;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -16,15 +15,43 @@ public class FileUtil {
      * @param fileName 上传文件名
      * @throws Exception
      */
-    public static void uploadFile(byte[] file, String filePath, String fileName, boolean isNeedUnCompress) throws Exception {
+    public static void uploadFile(byte[] file, String filePath, String fileName, boolean isAppend) throws Exception {
         File targetFile = new File(filePath);
         if (!targetFile.exists()) {
             targetFile.mkdirs();
         }
-        FileOutputStream out = new FileOutputStream(filePath +System.getProperty("file.separator")+ fileName);
+        FileOutputStream out = new FileOutputStream(filePath + System.getProperty("file.separator") + fileName);
         out.write(file);
         out.flush();
         out.close();
+    }
+
+    public static void uploadBigFile(MultipartFile file, String filePath, String fileName) throws Exception {
+        File toFile = null;
+        if(file.equals("")||file.getSize()<=0){
+            file = null;
+        }else {
+            InputStream ins = null;
+            ins = file.getInputStream();
+            inputStreamToFile(ins, filePath,fileName);
+            ins.close();
+        }
+    }
+
+    public static void inputStreamToFile(InputStream ins,String filePath, String fileName) {
+        try {
+            int bufferSize=64*1024*1024;
+            OutputStream os = new FileOutputStream(filePath + System.getProperty("file.separator") + fileName);
+            int bytesRead = 0;
+            byte[] buffer = new byte[bufferSize];
+            while ((bytesRead = ins.read(buffer, 0, bufferSize)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void delFile(String filePath) throws Exception{
@@ -32,15 +59,4 @@ public class FileUtil {
         if(file.exists()&&file.isFile())
             file.delete();
     }
-
-    /*public static void delFile(String filePath, String fileName) throws Exception{
-        File file=new File(filePath+"/"+fileName);
-        if(file.exists()&&file.isFile())
-            file.delete();
-    }*/
-
-
-
-
-
 }
