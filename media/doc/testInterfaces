@@ -1,0 +1,318 @@
+tagCodes功能（属性）
+1.接口名称:查单个
+	url:'/controller/TagCodes/{1}',
+	请求方式:'GET',
+	参数:{
+		id:'1',
+	}
+	返回:{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": {
+        "id": 1,
+        "tag": 1,
+        "tagCode": "RECOMMEND"
+    }
+}
+备注:无
+
+2.接口名称:
+	url:'/controller/addTagCodes',
+	请求方式:'POST',
+	参数:{
+		{"tag":5,"tagCode":"discount"}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+3.接口名称:
+	url:'/controller/updateTagCodes',
+	请求方式:'PUT',
+	参数:{
+		{"id":5,"tag":5,"tagCode":"DISCOUNT"}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": {
+        "id": 5,
+        "tag": 5,
+        "tagCode": "DISCOUNT"
+    }
+}
+备注:无
+
+4.接口名称:
+	url:'/controller/delTagsCodes',
+	请求方式:'DELETE',
+	参数:{
+		{"id": [{"id": 6},{"id": 7},{"id": 8},{"id": 9}]}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+5.接口名称:查多个，可分页
+	url:'/controller/getTagCodesLis',
+	请求方式:'GET',
+	参数:{
+
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": [
+        {
+            "id": 1,
+            "tag": 1,
+            "tagCode": "RECOMMEND"
+        },
+        {
+            "id": 2,
+            "tag": 2,
+            "tagCode": "CHOICE"
+        },
+        {
+            "id": 3,
+            "tag": 3,
+            "tagCode": "FREE"
+        },
+        {
+            "id": 4,
+            "tag": 4,
+            "tagCode": "HOT"
+        }
+
+    ]
+}
+备注:无
+
+tag功能(绑定video,tagCodes)
+1.接口名称:查单个
+	url:'/controller/tags/{id}',
+	请求方式:'GET',
+	参数:{
+		id:'11',
+	}
+	返回:{
+  "status": 1,
+  "code": 200,
+  "msg": null,
+  "data": {
+    "id": 11,
+    "videoId": 6,
+    "tag": 4
+  }
+}
+备注:无
+
+2.接口名称:
+	url:'/controller/addTags',
+	请求方式:'POST',
+	参数:{
+		{"videoId":3,"tag":1}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+3.接口名称:
+	url:'/controller/updateTags',
+	请求方式:'PUT',
+	参数:{
+		{"id":48,"videoId":4,"tag":4}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+4.接口名称:
+	url:'/controller/delTags',
+	请求方式:'DELETE',
+	参数:{
+		{"id": [{"id": 42},{"id": 43},{"id": 44},{"id": 48}]}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+5.接口名称:解绑
+	url:'/controller/deleteTagsByV',
+	请求方式:'DELETE',
+	参数:{
+		tag:'1';{"id": [{"id": 8},{"id": 9},{"id": 10}]}
+	}
+
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+7.接口名称:绑定
+	url:'/controller/addTagsByV',
+	请求方式:'POST',
+	参数:{
+		[{"videoId": 1,"tag": 3},{"videoId": 2,"tag": 3},{"videoId": 3,"tag": 3}]
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+8.接口名称:未绑定tag值的veidoLis
+url:'/controller/getVideoLisByTagNobing',
+	请求方式:'GET',
+	参数:{
+
+		int tagsId =3
+		int pageIndex,
+        int pageSize
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": {
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": [
+        {
+            "id": 1,
+            "title": "12312313123",
+            "path": "/upload/video/201904101804577561.mp4",
+            "cover": "/upload/image/201904101804246654.png",
+            "desc": "66666",
+            "createTime": 1554890952,
+            "updateTime": 1554890953,
+            "categoryId": 2,
+            "type": "",
+            "status": 1
+        },
+        {
+            "id": 2,
+            "title": "45645",
+            "path": "/upload/video/201904101811486951.mp4",
+            "cover": "/upload/image/201904101811530101.jpg",
+            "desc": "77777777",
+            "createTime": 1554891126,
+            "updateTime": 1554891126,
+            "categoryId": 2,
+            "type": "",
+            "status": 1
+        },
+        {
+            "id": 4,
+            "title": "78756",
+            "path": "/upload/video/201904101819503092.mp4",
+            "cover": "/upload/image/201904101819576268.png",
+            "desc": "456456456456",
+            "createTime": 1554891603,
+            "updateTime": 1554891603,
+            "categoryId": 1,
+            "type": "",
+            "status": 1
+        }
+    ]
+}
+备注:无
+
+9.接口名称:绑定tag值的videoLis
+	url:'/controller/getVideoLisByTagbing',
+	请求方式:'GET',
+	参数:{
+		int tagsId=3
+		int pageIndex,
+        int pageSize
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": [
+        {
+            "id": 3,
+            "title": "3",
+            "path": "3.mp4",
+            "cover": "3",
+            "desc": "3",
+            "createTime": 3,
+            "updateTime": 3,
+            "categoryId": 3,
+            "type": "1",
+            "status": 1
+        }
+    ]
+}
+备注:无
+
+10.接口名称:
+	url:'/controller/getTagsLisByV',
+	请求方式:'GET',
+	参数:{
+		int videoId=1
+		int pageIndex,
+        int pageSize
+	}
+	返回:
+	{
+        "status": 1,
+        "code": 200,
+        "msg": null,
+        "data": [
+            {
+                "id": 1,
+                "videoId": 1,
+                "tag": 1,
+                "tagCode": "RECOMMEND"
+            },
+            {
+                "id": 2,
+                "videoId": 1,
+                "tag": 2,
+                "tagCode": "CHOICE"
+            }
+        ]
+    }
+备注:无

@@ -7,6 +7,7 @@ public class Tags {
     int id;
     int videoId;
     int tag;
+    String tagCode;
 
 
     public enum Tag {
@@ -19,6 +20,14 @@ public class Tags {
         Tag(int tag) {
             this.tag = tag;
         }
+    }
+
+    public String getTagCode() {
+        return tagCode;
+    }
+
+    public void setTagCode(String tagCode) {
+        this.tagCode = tagCode;
     }
 
     public int getId() {

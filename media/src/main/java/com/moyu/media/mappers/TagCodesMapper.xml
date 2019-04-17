@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moyu.media.mappers.TagCodesMapper">
+    <select id="selectTagCodes" resultType="com.moyu.media.model.TagCodes">
+        select t.id,
+               t.tag,
+               t.tagCode
+          from TagCodes t
+        where t.id=#{id}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(id) from TagCodes t where 1=1
+        <if test="tagCode !=-1 ">
+            and t.tagCode=#{tagCode}
+        </if>
+    </select>
+
+    <insert id="insertTagCodes"
+            parameterType="com.moyu.media.model.TagCodes"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into TagCodes (tag,tagCode)
+        values(#{tag},#{tagCode})
+    </insert>
+
+    <update id="updateTagCodes"
+            parameterType="com.moyu.media.model.TagCodes">
+      update TagCodes set
+      tag=#{tag},
+      tagCode=#{tagCode}
+      where id=#{id}
+    </update>
+
+
+    <delete id="deleteTagCodes">
+        delete from TagCodes
+        where id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getTagCodesLis" resultType="com.moyu.media.model.TagCodes">
+        select t.id,t.tag,t.tagCode
+        from TagCodes t
+        where 1=1
+        <if test=" tagCode != '-1' ">
+            and t.tagCode=#{tagCode}
+        </if>
+        <if test="limit>0">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+
+
+
+</mapper>

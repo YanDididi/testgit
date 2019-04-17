@@ -17,32 +17,26 @@
     </select>
 
     <select id="getTagsLisByV" resultType="Tags">
-        select t.id,t.video_id as videoId,t.tag
+        select t.id,t.video_id as videoId,t.tag,tc.tagcode
         from Tags t
         left join video v on t.video_id=v.id
-        where
-        <choose>
-            <when test="list == null">
-                1=1
-            </when>
-            <otherwise>
-                t.tag in
-                <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
-                    #{item}
-                </foreach>
-            </otherwise>
-        </choose>
+        left join tagcodes tc on t.tag=tc.tag
+        where 1=1
         <if test="videoId !=-1 ">
-            and t.video_id=#{videoId}
+          and t.video_id=#{videoId}
         </if>
         <if test="limit>0">
             limit #{limit} offset #{offset}
         </if>
     </select>
 
-    <select id="getVideoLisByTagNobing" resultType="Tags">
-        select v.* from video v where v.id not in
-
+    <select id="getVideoLisByTagNobing" resultType="Video">
+        select v.id,v.title,v.desc,v.cover,v.type,v.path,
+        v.category_id as categoryId,
+        v.create_time as createTIme,
+        v.update_time as updateTime
+        from video v
+        where v.id not in
         (select v.id
         from Tags t
         RIGHT join video v on t.video_id=v.id
@@ -63,7 +57,7 @@
         GROUP BY v.id )
     </select>
 
-    <select id="getVideoLisByTagbing" resultType="Tags">
+    <select id="getVideoLisByTagbing" resultType="Video">
         select v.*
         from Tags t
         RIGHT join video v on t.video_id=v.id

@@ -18,11 +18,11 @@ public interface TagsMapper {
     int deleteTags(@Param("list") List<Integer> idLis);
 
     List<Tags> getTagsLisByV(@Param("videoId") int videoId,
-                             @Param("list") List<Integer> tagLis,
                               @Param("limit") int limit,
                               @Param("offset") int offset);
 
-    List<Video> getVideoLisByTagNobing(@Param("tagsId") int tagsId);
+    List<Video> getVideoLisByTagNobing(@Param("tagsId") int tagsId, @Param("limit") int limit,
+                                       @Param("offset") int offset);
 
     int getVideoCountLisByTagNobing(@Param("tagsId") int tagsId) ;
 

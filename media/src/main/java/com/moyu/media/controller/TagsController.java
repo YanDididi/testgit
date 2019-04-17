@@ -179,7 +179,7 @@ public class TagsController {
             TagsMapper mapper = sqlSession.getMapper(TagsMapper.class);
             List<Video> videoLis;
             int offset = (pageIndex - 1) * pageSize;
-            videoLis = mapper.getVideoLisByTagNobing(tagsId);
+            videoLis = mapper.getVideoLisByTagNobing(tagsId,pageSize,offset);
 
             if (pageSize > 0) {
                 int totalCount = mapper.getVideoCountLisByTagNobing(tagsId);
@@ -223,25 +223,17 @@ public class TagsController {
 
     @RequestMapping(path = {"/controller/getTagsListByV"}, method = RequestMethod.GET)
     public Result getTagsLisByV(@RequestParam(value = "videoId", required = false, defaultValue = "-1") int videoId,
-                                @RequestBody(required = false) Map<String, Object> map,
                                 @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
 
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {
-            List<Map<String, Integer>> tags = (List<Map<String, Integer>>) map.get("tag");
-
-            List<Integer> tagLis = new ArrayList<>();
-            for (int i = 0; i < tags.size(); i++) {
-                int tag = tags.get(i).get("tag");
-                tagLis.add(tag);
-            }
 
             TagsMapper mapper = sqlSession.getMapper(TagsMapper.class);
             List<Tags> tagsLis;
             int offset = (pageIndex - 1) * pageSize;
-            tagsLis = mapper.getTagsLisByV(videoId,tagLis, pageSize, offset);
+            tagsLis = mapper.getTagsLisByV(videoId, pageSize, offset);
 
             if (pageSize > 0) {
                 int totalCount = mapper.selectCount(videoId);

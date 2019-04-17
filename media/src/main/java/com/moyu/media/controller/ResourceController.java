@@ -117,7 +117,7 @@ public class ResourceController {
             List<Map<String, Integer>> vIds = (List<Map<String, Integer>>) map.get("id");
 
             String targetPath = fileConfig.getFilePath();
-            int indexb = targetPath.lastIndexOf("\\");
+            int indexb = targetPath.lastIndexOf(System.getProperty("file.separator"));
             String tPath = targetPath.substring(0, indexb)+targetPath.substring(indexb+1, targetPath.length());
 
             List<Integer> vidLis = new ArrayList<>();
@@ -186,8 +186,6 @@ public class ResourceController {
                     return ResultGenerator.success(videos);
                 }
             }
-
-
         } catch (Exception e) {
             return ResultGenerator.fail(e.toString());
         } finally {
