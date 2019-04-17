@@ -1,18 +1,15 @@
 package com.moyu.redarmy.controller;
 
-import com.alibaba.fastjson.JSONArray;
+
 import com.moyu.redarmy.core.db.DBHelper;
 import com.moyu.redarmy.core.result.Result;
 import com.moyu.redarmy.core.result.ResultGenerator;
 import com.moyu.redarmy.model.Company;
-import com.moyu.redarmy.util.MYUtil;
+import com.moyu.redarmy.model.Node;
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.moyu.redarmy.mappers.*;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,12 +66,27 @@ public class Demo {
     }
 
     @RequestMapping(path = "/delFile", method = RequestMethod.DELETE)
-    public void delFile(@RequestParam("filePath") String filePath,@RequestParam("fileName") String fileName){
-        File file=new File(filePath+"/"+fileName);
-        if(file.exists()&&file.isFile())
+    public void delFile(@RequestParam("filePath") String filePath, @RequestParam("fileName") String fileName) {
+        File file = new File(filePath + "/" + fileName);
+        if (file.exists() && file.isFile())
             file.delete();
     }
 
+    @RequestMapping(path = "/getNodeTree", method = RequestMethod.GET)
+    public Result getNodeTree() {
+        SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
+        NodeMapper mapper = sqlSession.getMapper(NodeMapper.class);
+        List<Node> nodeLis = mapper.getNodeTree();
+        try {
+
+                return ResultGenerator.success(nodeLis);
+
+        } catch (Exception e) {
+            return ResultGenerator.fail(e.toString());
+        } finally {
+            sqlSession.close();
+        }
+    }
 
 
 
