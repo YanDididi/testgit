@@ -46,7 +46,7 @@ public class ScreenController {
             String targetPath = fileConfig.getFilePath();
             String fileNames = file.getOriginalFilename();
             String ExtensionName = MYUtil.getExtensionName(fileNames);
-            String fileName = "deviceId-"+deviceId+"-TheLast."+ExtensionName;
+            String fileName = "deviceId-" + deviceId + "-TheLast." + ExtensionName;
             boolean isNeedUnCompress = false;
             webPath = webPath + rootDirName + "/" + fileName;
 
@@ -72,7 +72,7 @@ public class ScreenController {
         String imgDatas = imgMap.get("imageData");
         String imgData = MYUtil.getBaseFileCode(imgDatas);
         Integer deviceId = Integer.valueOf(imgMap.get("deviceId"));
-        if ((imgDatas.isEmpty()) || (null==deviceId)) {
+        if ((imgDatas.isEmpty()) || (null == deviceId)) {
             return ResultGenerator.fail("文件或 deviceId 为空");
         }
         deleteScreen(deviceId);
@@ -84,7 +84,7 @@ public class ScreenController {
             String fileName = dateStr + MYUtil.Random(4)  + ".jpg";*/
 
             String ExtensionName = MYUtil.getBaseFileExtensionName(imgDatas);
-            String fileName = "deviceId-"+deviceId+"-TheLast."+ExtensionName;
+            String fileName = "deviceId-" + deviceId + "-TheLast." + ExtensionName;
 
             //String fileName = String.valueOf(MYUtil.GetTimeStamps()) + ".jpg";
 
@@ -177,18 +177,14 @@ public class ScreenController {
         try {
             ScreenMapper mapper = sqlSession.getMapper(ScreenMapper.class);
             List<Map<String, Integer>> deviceIds = (List<Map<String, Integer>>) map.get("deviceIds");
-            List<Screen> screenLis = new ArrayList<>();
+            List<Screen> screenLis;
+            List<Integer> deviceIdLis = new ArrayList<>();
             for (int i = 0; i < deviceIds.size(); i++) {
                 int deviceId = deviceIds.get(i).get("deviceId");
-                Screen screen = mapper.selectScreen(deviceId);
-                sqlSession.commit();
-                //当前时间和超时时间
-                if (null != screen && (MYUtil.GetTimeStamps() <= screen.getExpiryTime())) {
-
-                    screenLis.add(screen);
-                }
+                deviceIdLis.add(deviceId);
             }
-            sqlSession.commit();
+            screenLis = mapper.selectScreenLis(deviceIdLis);
+
             JSONArray array = JSONArray.parseArray(JSON.toJSONString(screenLis));
             return ResultGenerator.success(array);
 

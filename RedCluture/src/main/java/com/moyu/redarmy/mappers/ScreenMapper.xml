@@ -26,6 +26,19 @@
         (#{deviceId},#{coverImg},#{createTime},#{expiryTime})
     </insert>
 
+    <select id="selectScreenLis" resultType="com.moyu.redarmy.model.Screen">
+        select s.id,
+        s.device_id as deviceId,
+        s.cover_img as coverImg,
+        s.create_time as createTime,
+        s.expiry_time as expiryTime
+        from Screen s
+        where s.device_id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and s.expiry_time >= now();
+   </select>
 
 
 </mapper>

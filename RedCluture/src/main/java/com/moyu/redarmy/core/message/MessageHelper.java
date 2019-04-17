@@ -189,11 +189,11 @@ public class MessageHelper {
 
     public int getClientType(String clientId){
        Object clientType= redisUtil.get(redisUtil.generateKey(clientId,RedisUtil.TYPE_DEVICE));
-       return clientType==null?Device.DeviceType.USER.type:(int)clientType;
+       return clientType==null?Device.DeviceType.EXPERIENCER.type:(int)clientType;
     }
     public int getClientType(int clientId){
         Object clientType= redisUtil.get(redisUtil.generateKey(String.valueOf(clientId),RedisUtil.TYPE_DEVICE));
-        return clientType==null?Device.DeviceType.USER.type:(int)clientType;
+        return clientType==null?Device.DeviceType.EXPERIENCER.type:(int)clientType;
     }
 
     public void SyncBaseInfo(int clientId, BaseInfo baseInfo,SocketIOServer server){

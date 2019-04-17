@@ -98,6 +98,13 @@ public class MessageEventHandler {
         //saveLastEvent(client,data);
     }
 
+    @OnEvent(value = "EmitEvent")
+    public void onEmitEvent(SocketIOClient client, AckRequest request, Object data){
+        String clientId = client.getHandshakeData().getSingleUrlParam("deviceId");
+        int clientType = MYUtil.ParseInt(client.getHandshakeData().getSingleUrlParam("clientType"));
+        clientType = clientType == RedisUtil.DEVICE_CONTROL ? clientType : messageHelper.getClientType(clientId);
+        messageHelper.syncData(clientType, clientId, data, server);
+    }
     /*@Scheduled(cron = "0/5 * *  * * ? ")
     public void saveLastEvent(SocketIOClient client,Object data) {
         String clientId = client.getHandshakeData().getSingleUrlParam("deviceId");
@@ -126,6 +133,14 @@ public class MessageEventHandler {
         logger.info("receive client message");
         if (request.isAckRequested()) {
             request.sendAckData("yes");
+        }
+        String clientId = client.getHandshakeData().getSingleUrlParam("deviceId");
+        logger.info("receive client message:"+clientId);
+        if (!redisUtil.hasKey(redisUtil.generateKey(clientId, RedisUtil.DEVICE_USER))) {
+            int clientType = messageHelper.getClientType(clientId);
+            JSONObject jo = new JSONObject();
+            jo.put("online", State.STATE_ONLINE);
+            messageHelper.controlData(clientType, clientId, JSON.toJSONString(jo), server);
         }
     }
 

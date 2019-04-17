@@ -1,5 +1,6 @@
 package com.moyu.redarmy.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moyu.redarmy.core.db.DBHelper;
 import com.moyu.redarmy.core.result.Result;
 import com.moyu.redarmy.core.result.ResultGenerator;
@@ -10,6 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.moyu.redarmy.mappers.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -63,6 +67,15 @@ public class Demo {
 //        System.out.println("hello spring boot");
 //        return "hello a spring boot";
     }
+
+    @RequestMapping(path = "/delFile", method = RequestMethod.DELETE)
+    public void delFile(@RequestParam("filePath") String filePath,@RequestParam("fileName") String fileName){
+        File file=new File(filePath+"/"+fileName);
+        if(file.exists()&&file.isFile())
+            file.delete();
+    }
+
+
 
 
 }
