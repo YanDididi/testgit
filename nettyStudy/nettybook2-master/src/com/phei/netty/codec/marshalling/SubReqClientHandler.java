@@ -36,9 +36,9 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
 	for (int i = 0; i < 10; i++) {
-	    ctx.write(subReq(i));
+	    ctx.writeAndFlush(subReq(i));
 	}
-	ctx.flush();
+
     }
 
     private SubscribeReq subReq(int i) {
@@ -52,8 +52,7 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-	    throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
 	System.out.println("Receive server response : [" + msg + "]");
     }
 

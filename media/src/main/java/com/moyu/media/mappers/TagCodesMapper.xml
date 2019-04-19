@@ -3,16 +3,20 @@
 <mapper namespace="com.moyu.media.mappers.TagCodesMapper">
     <select id="selectTagCodes" resultType="com.moyu.media.model.TagCodes">
         select t.id,
-               t.tag,
-               t.tagCode
+               t.tagCode,
+               t.create_time as createTime,
+               t.update_time as updateTime
           from TagCodes t
         where t.id=#{id}
     </select>
 
     <select id="selectCount" resultType="int">
-        select count(id) from TagCodes t where 1=1
+        select count(id) from TagCodes  where 1=1
         <if test="tagCode !=-1 ">
-            and t.tagCode=#{tagCode}
+            and tagCode=#{tagCode}
+        </if>
+        <if test="status!=-1">
+            and status=#{status}
         </if>
     </select>
 
@@ -20,40 +24,42 @@
             parameterType="com.moyu.media.model.TagCodes"
             useGeneratedKeys="true"
             keyProperty="id">
-        insert into TagCodes (tag,tagCode)
-        values(#{tag},#{tagCode})
+        insert into TagCodes (tagCode,create_time,update_time,status)
+        values(#{tagCode},#{createTime},#{updateTime},#{status})
     </insert>
 
     <update id="updateTagCodes"
             parameterType="com.moyu.media.model.TagCodes">
       update TagCodes set
-      tag=#{tag},
-      tagCode=#{tagCode}
+      tagCode=#{tagCode},
+      update_time=#{updateTime},
+      status=#{status}
       where id=#{id}
     </update>
 
-
     <delete id="deleteTagCodes">
         delete from TagCodes
-        where id in
-        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
+        where id =#{id}
     </delete>
 
     <select id="getTagCodesLis" resultType="com.moyu.media.model.TagCodes">
-        select t.id,t.tag,t.tagCode
+        select
+        t.id,
+        t.tagCode,
+        t.create_time as createTime,
+        t.update_time as updateTime,
+        t.stuatus
         from TagCodes t
         where 1=1
-        <if test=" tagCode != '-1' ">
+        <if test=" tagCode != -1 ">
             and t.tagCode=#{tagCode}
+        </if>
+        <if test="status!=-1">
+            and t.status=#{status}
         </if>
         <if test="limit>0">
             limit #{limit} offset #{offset}
         </if>
     </select>
-
-
-
 
 </mapper>

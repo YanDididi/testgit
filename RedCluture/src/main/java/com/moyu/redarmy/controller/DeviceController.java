@@ -198,32 +198,41 @@ public class DeviceController {
 
     @RequestMapping(path = {"/controller/getSyncEvent"}, method = RequestMethod.GET)
     @ResponseBody
-    public Result GetSyncEvent(@RequestParam("deviceId") String expId) {
+    public Result GetSyncEvent(@RequestParam("deviceId") String deviceId, @RequestParam("clientType") int clientType) {
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         DeviceMapper mapper = sqlSession.getMapper(DeviceMapper.class);
         try {
-            Integer leadId = mapper.selectLeadIdByExpId(Integer.valueOf(expId));
-            if (null == leadId) {
-                return ResultGenerator.fail("leadId is null");
-            }
-            String leadKey = "leader:" + leadId + ":sync";
-            if (!StringUtils.isEmpty(redisUtil.get(leadKey))) {
-                Integer result = (Integer) redisUtil.hget("Device:" + expId + ":User", "lock");
-                if (null == result) {
-                    result = 1;
+            if (1 == clientType) {
+                Integer leadId = mapper.selectLeadIdByExpId(Integer.valueOf(deviceId));
+                if (null == leadId) {
+                    return ResultGenerator.fail("leadId is null");
                 }
-                if (result != 0) {
+                String leadKey = "leader:" + leadId + ":sync";
+                if (!StringUtils.isEmpty(redisUtil.get(leadKey))) {
+                    Integer result = (Integer) redisUtil.hget("Device:" + deviceId + ":User", "lock");
+                    if (null == result) {
+                        result = 1;
+                    }
+                    if (result != 0) {
+                        logger.info("GET SyncEvent,from:" + leadKey);
+                        return ResultGenerator.success(String.valueOf(redisUtil.get(leadKey)));
+                    }
+                }
+                return ResultGenerator.fail("select by leadKey is null");
+            } else if (2 == clientType) {
+                String leadKey = "leader:" + deviceId + ":sync";
+                if (!StringUtils.isEmpty(redisUtil.get(leadKey))) {
                     logger.info("GET SyncEvent,from:" + leadKey);
                     return ResultGenerator.success(String.valueOf(redisUtil.get(leadKey)));
                 }
+                return ResultGenerator.fail("select by leadKey is null");
+            } else {
+                return ResultGenerator.fail("clientType is err");
             }
-            return ResultGenerator.fail("select by leadKey is null");
         } catch (Exception e) {
             return ResultGenerator.fail(e.toString());
         } finally {
             sqlSession.close();
         }
-        /**/
     }
-
 }

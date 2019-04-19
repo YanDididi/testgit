@@ -90,7 +90,13 @@ public class MessageEventHandler {
     public void onEvent(SocketIOClient client, AckRequest request, Object data) {
         String clientId = client.getHandshakeData().getSingleUrlParam("deviceId");
         int clientType = MYUtil.ParseInt(client.getHandshakeData().getSingleUrlParam("clientType"));
-        clientType = clientType == RedisUtil.DEVICE_CONTROL ? clientType : messageHelper.getClientType(clientId);
+//        clientType = clientType == RedisUtil.DEVICE_CONTROL ? clientType : messageHelper.getClientType(clientId);
+        if(clientType==RedisUtil.DEVICE_CONTROL){
+            JSONObject jsonData=JSONObject.parseObject(data.toString());
+            clientId=jsonData.getString("leaderId");
+        }else{
+            clientType = messageHelper.getClientType(clientId);
+        }
         messageHelper.syncData(clientType, clientId, data, server);
         logger.info("收到SyncEvent,from:"+clientId);
         String leadKey = "leader:" + clientId + ":sync";

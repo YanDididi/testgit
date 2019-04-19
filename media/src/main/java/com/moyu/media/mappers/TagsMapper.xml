@@ -14,10 +14,16 @@
         <if test="videoId !=-1 ">
             and t.video_id=#{videoId}
         </if>
+        <if test="status !=-1 ">
+            and t.status=#{status}
+        </if>
     </select>
 
     <select id="getTagsLisByV" resultType="Tags">
-        select t.id,t.video_id as videoId,t.tag,tc.tagcode
+        select t.id,
+        t.video_id as videoId,
+        t.tag,
+        tc.tagcode
         from Tags t
         left join video v on t.video_id=v.id
         left join tagcodes tc on t.tag=tc.tag
@@ -34,7 +40,8 @@
         select v.id,v.title,v.desc,v.cover,v.type,v.path,
         v.category_id as categoryId,
         v.create_time as createTIme,
-        v.update_time as updateTime
+        v.update_time as updateTime,
+        v.status
         from video v
         where v.id not in
         (select v.id
@@ -42,6 +49,9 @@
         RIGHT join video v on t.video_id=v.id
         where t.tag=#{tagsId}
         GROUP BY v.id )
+        <if test="status !=-1">
+            and v.status=#{status}
+        </if>
         <if test="limit>0">
             limit #{limit} offset #{offset}
         </if>
@@ -55,13 +65,23 @@
         RIGHT join video v on t.video_id=v.id
         where t.tag=#{tagsId}
         GROUP BY v.id )
+        <if test="status !=-1">
+            and v.status=#{status}
+        </if>
     </select>
 
     <select id="getVideoLisByTagbing" resultType="Video">
-        select v.*
-        from Tags t
-        RIGHT join video v on t.video_id=v.id
+        select v.id,v.title,v.desc,v.cover,v.type,v.path,
+        v.category_id as categoryId,
+        v.create_time as createTIme,
+        v.update_time as updateTime,
+        v.status
+        from video v
+        left join Tags t on v.id=t.video_id
         where t.tag=#{tagsId}
+        <if test="status !=-1">
+            and v.status=#{status}
+        </if>
         GROUP BY v.id
         <if test="limit>0">
             limit #{limit} offset #{offset}
@@ -72,7 +92,7 @@
         select COUNT(*)  from video v where v.id in
         (select v.id
         from Tags t
-        RIGHT join video v on t.video_id=v.id
+        left join video v on t.video_id=v.id
         where t.tag=#{tagsId}
         GROUP BY v.id )
     </select>
@@ -100,6 +120,11 @@
         <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
+    </delete>
+
+    <delete id="deleteTagsByT">
+        delete from Tags
+        where tag =#{id}
     </delete>
 
     <delete id="deleteTagsByV">

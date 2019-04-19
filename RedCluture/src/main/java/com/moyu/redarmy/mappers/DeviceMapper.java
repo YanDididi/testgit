@@ -24,4 +24,6 @@ public interface DeviceMapper {
     Integer selectLeadIdByExpId(@Param("expId") int expId);
 
     String getLastNumber();
+
+    int isLeader(@Param("deviceId") String deviceId);
 }

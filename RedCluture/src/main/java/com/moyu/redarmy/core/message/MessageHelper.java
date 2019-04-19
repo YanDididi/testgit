@@ -121,34 +121,40 @@ public class MessageHelper {
                 break;
             }
             case Command.CLIENT_LEADER: {
-                String key = redisUtil.generateKey(clientId, RedisUtil.ROOM_EXPERIENCERS);
-                int sendedCnt = 0;
-                Set experiencers = redisUtil.sGet(key);
-                if (experiencers != null) {
-                    for (Object s : experiencers) {
-                        sendedCnt++;
-                        String deviceKey = redisUtil.generateKey(s.toString(), RedisUtil.DEVICE_EXPERIENCER);
-                        Map<Object, Object> map = redisUtil.hmget(deviceKey);
-                        if (map != null && map.get("sessionId") != null) {
-                            if (map.get("lock") == null || (int) map.get("lock") == 1) {
-                                SocketIOClient client = server.getClient(UUID.fromString(map.get("sessionId").toString()));
-                                if (client != null) {
-                                    client.sendEvent("SyncEvent", data);
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-                logger.info("send syncData 终端数:" + sendedCnt);
+                dispatchDataToExperiencers(clientId,server,data);
                 break;
             }
             case Command.CLIENT_CONTROLLER: {
+                String deviceKey = redisUtil.generateKey(clientId, RedisUtil.DEVICE_USER);
+                Map<Object, Object> map = redisUtil.hmget(deviceKey);
+                if(map!=null){
+                    SocketIOClient leaderClient=server.getClient(UUID.fromString(map.get("sessionId").toString()));
+                    leaderClient.sendEvent("SyncEvent", data);
+                }
+                dispatchDataToExperiencers(clientId,server,data);
                 break;
             }
             default: {
 
+            }
+        }
+    }
+
+    private void dispatchDataToExperiencers(String leaderId,SocketIOServer server,Object data){
+        String key = redisUtil.generateKey(leaderId, RedisUtil.ROOM_EXPERIENCERS);
+        Set experiencers = redisUtil.sGet(key);
+        if (experiencers != null) {
+            for (Object s : experiencers) {
+                String deviceKey = redisUtil.generateKey(s.toString(), RedisUtil.DEVICE_EXPERIENCER);
+                Map<Object, Object> map = redisUtil.hmget(deviceKey);
+                if (map != null && map.get("sessionId") != null) {
+                    if (map.get("lock") == null || (int) map.get("lock") == 1) {
+                        SocketIOClient client = server.getClient(UUID.fromString(map.get("sessionId").toString()));
+                        if (client != null) {
+                            client.sendEvent("SyncEvent", data);
+                        }
+                    }
+                }
             }
         }
     }

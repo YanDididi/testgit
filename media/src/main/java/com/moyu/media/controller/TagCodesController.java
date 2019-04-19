@@ -5,6 +5,7 @@ import com.moyu.media.core.db.DBHelper;
 import com.moyu.media.core.result.Result;
 import com.moyu.media.core.result.ResultGenerator;
 import com.moyu.media.mappers.TagCodesMapper;
+import com.moyu.media.mappers.TagsMapper;
 import com.moyu.media.model.TagCodes;
 import com.moyu.media.util.MYUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 @RestController
 
 public class TagCodesController {
 
-    @RequestMapping(path = {"/controller/TagCodes/{id}"}, method = RequestMethod.GET)
+    @RequestMapping(path = {"/controller/tagCodes/{id}"}, method = RequestMethod.GET)
     public Result getTagCodes(@PathVariable int id) {
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {
@@ -32,7 +34,7 @@ public class TagCodesController {
     }
 
 
-    @RequestMapping(path = {"/controller/addTagCodes"}, method = RequestMethod.POST)
+    @RequestMapping(path = {"/controller/tagCodes"}, method = RequestMethod.POST)
     public Result addTagCodes(@RequestBody Map<String, Object> map) {
         String[] needParams = {"tag", "tagCode"};
         if (!MYUtil.IsExistParams(map, needParams)) {
@@ -42,7 +44,8 @@ public class TagCodesController {
         try {
             TagCodesMapper tagCodesMapper = sqlSession.getMapper(TagCodesMapper.class);
             TagCodes tagCodes = new TagCodes();
-            tagCodes.setTag(MYUtil.ParseInt(MYUtil.GetParam(map, "tag")));
+            tagCodes.setCreateTime(MYUtil.GetTimeStamps());
+            tagCodes.setUpdateTime(MYUtil.GetTimeStamps());
             tagCodes.setTagCode((MYUtil.GetParam(map, "tagCode")));
 
             if (tagCodesMapper.insertTagCodes(tagCodes) > 0) {
@@ -58,9 +61,9 @@ public class TagCodesController {
         }
     }
 
-    @RequestMapping(path = {"/controller/updateTagCodes"}, method = RequestMethod.PUT)
+    @RequestMapping(path = {"/controller/tagCodes"}, method = RequestMethod.PUT)
     public Result updateTagCodes(@RequestBody Map<String, Object> map) {
-        String[] needParams = {"id","tag", "tagCode"};
+        String[] needParams = {"id", "tagCode"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
@@ -69,7 +72,8 @@ public class TagCodesController {
             TagCodesMapper tagCodesMapper = sqlSession.getMapper(TagCodesMapper.class);
             TagCodes tagCodes = new TagCodes();
             tagCodes.setId(MYUtil.ParseInt(MYUtil.GetParam(map, "id")));
-            tagCodes.setTag(MYUtil.ParseInt(MYUtil.GetParam(map, "tag")));
+
+            tagCodes.setUpdateTime(MYUtil.GetTimeStamps());
             tagCodes.setTagCode((MYUtil.GetParam(map, "tagCode")));
             if (tagCodesMapper.updateTagCodes(tagCodes) > 0) {
                 sqlSession.commit();
@@ -84,26 +88,18 @@ public class TagCodesController {
         }
     }
 
-    @RequestMapping(path = {"/controller/delTagsCodes"}, method = RequestMethod.DELETE)
-    public Result delTagCodes(@RequestBody Map<String, Object> map) {
-        String[] needParams = {"id"};
-        if (!MYUtil.IsExistParams(map, needParams)) {
-            return ResultGenerator.fail("params empty");
-        }
+    @RequestMapping(path = {"/controller/tagCodes/{id}"}, method = RequestMethod.DELETE)
+    public Result delTagCodes(@PathVariable int id) {
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         TagCodesMapper tagCodesMapper = sqlSession.getMapper(TagCodesMapper.class);
+        TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
+
         try {
-
-            List<Map<String, Integer>> ids = (List<Map<String, Integer>>) map.get("id");
-
-            List<Integer> idLis = new ArrayList<>();
-            for (int i = 0; i < ids.size(); i++) {
-                int id = ids.get(i).get("id");
-                idLis.add(id);
-            }
-            int result1 = tagCodesMapper.deleteTagCodes(idLis);
+            int result1 = tagCodesMapper.deleteTagCodes(id);
+            //删除关联tags
+            tagsMapper.deleteTagsByT(id);
             //int result2 = resourceMapper.deleteVideo(vidLis);
-            if (result1 > 0 ) {
+            if (result1 > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
@@ -119,6 +115,7 @@ public class TagCodesController {
 
     @RequestMapping(path = {"/controller/getTagCodesLis"}, method = RequestMethod.GET)
     public Result getTagCodesLis(@RequestParam(value = "tagCode", required = false, defaultValue = "-1") String tagCode,
+                                 @RequestParam(value = "status", required = false, defaultValue = "-1") int status,
                                  @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
                                  @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
 
@@ -127,13 +124,13 @@ public class TagCodesController {
         TagCodesMapper tagCodesMapper = sqlSession.getMapper(TagCodesMapper.class);
         try {
             int offset = (pageIndex - 1) * pageSize;
-            tagCodesLis = tagCodesMapper.getTagCodesLis(tagCode,pageSize, offset);
+            tagCodesLis = tagCodesMapper.getTagCodesLis(tagCode, status,pageSize, offset);
 
 
-            if(pageSize>0){
-                int totalCount=tagCodesMapper.selectCount(tagCode);
-                return ResultGenerator.successPage(pageIndex,pageSize,totalCount,tagCodesLis);
-            }else{
+            if (pageSize > 0) {
+                int totalCount = tagCodesMapper.selectCount(tagCode,status);
+                return ResultGenerator.successPage(pageIndex, pageSize, totalCount, tagCodesLis);
+            } else {
                 return ResultGenerator.success(tagCodesLis);
             }
         } catch (Exception e) {

@@ -11,9 +11,10 @@ public interface TagCodesMapper {
     TagCodes selectTagCodes(@Param("id") int id);
     int insertTagCodes(TagCodes tagCodes);
     int updateTagCodes(TagCodes tagCodes);
-    int selectCount(@Param("tagCode") String tagCode);
-    int deleteTagCodes(@Param("list") List<Integer> idLis);
+    int selectCount(@Param("tagCode") String tagCode, @Param("status") int status);
+    int deleteTagCodes(@Param("id") int id);
     List<TagCodes> getTagCodesLis(@Param("tagCode") String tagCode,
+                                  @Param("status") int status,
                                   @Param("limit") int limit,
                                   @Param("offset") int offset);
 

@@ -46,13 +46,12 @@ public class SecureChatClient {
 	try {
 	    Bootstrap b = new Bootstrap();
 	    b.group(group).channel(NioSocketChannel.class)
-		    .handler(new SecureChatClientInitializer(sslMode));
+		 .handler(new SecureChatClientInitializer(sslMode));
 	    // Start the connection attempt.
 	    Channel ch = b.connect(host, port).sync().channel();
 	    // Read commands from the stdin.
 	    ChannelFuture lastWriteFuture = null;
-	    BufferedReader in = new BufferedReader(new InputStreamReader(
-		    System.in));
+	    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	    for (;;) {
 		String line = in.readLine();
 		if (line == null) {
@@ -83,13 +82,12 @@ public class SecureChatClient {
     public static void main(String[] args) throws Exception {
 	// Print usage if no argument is specified.
 	if (args.length != 1) {
-	    System.err.println("Usage: "
-		    + SecureChatClient.class.getSimpleName() + " <sslmode>");
+	    System.err.println("Usage: "+ SecureChatClient.class.getSimpleName() + " <sslmode>");
 	    return;
 	}
 
 	// Parse options.
 	String sslMode = args[0];
-	new SecureChatClient("localhost", 8443, sslMode).run();
+	new SecureChatClient("0.0.0.0", 8443, sslMode).run();
     }
 }

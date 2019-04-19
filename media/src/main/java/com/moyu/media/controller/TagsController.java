@@ -1,4 +1,5 @@
 package com.moyu.media.controller;
+
 import com.alibaba.fastjson.JSONObject;
 import com.moyu.media.core.db.DBHelper;
 import com.moyu.media.core.result.Result;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 @RestController
 public class TagsController {
     @RequestMapping(path = {"/controller/tags/{id}"}, method = RequestMethod.GET)
@@ -31,7 +33,7 @@ public class TagsController {
     }
 
 
-    @RequestMapping(path = {"/controller/addTags"}, method = RequestMethod.POST)
+    @RequestMapping(path = {"/controller/tags"}, method = RequestMethod.POST)
     public Result addTags(@RequestBody Map<String, Object> map) {
         String[] needParams = {"videoId", "tag"};
         if (!MYUtil.IsExistParams(map, needParams)) {
@@ -57,9 +59,9 @@ public class TagsController {
         }
     }
 
-    @RequestMapping(path = {"/controller/updateTags"}, method = RequestMethod.PUT)
+    @RequestMapping(path = {"/controller/tags"}, method = RequestMethod.PUT)
     public Result updateTags(@RequestBody Map<String, Object> map) {
-        String[] needParams = {"id","videoId", "tag"};
+        String[] needParams = {"id", "videoId", "tag"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
@@ -83,7 +85,7 @@ public class TagsController {
         }
     }
 
-    @RequestMapping(path = {"/controller/delTags"}, method = RequestMethod.DELETE)
+    @RequestMapping(path = {"/controller/tags"}, method = RequestMethod.DELETE)
     public Result delTags(@RequestBody Map<String, Object> map) {
         String[] needParams = {"id"};
         if (!MYUtil.IsExistParams(map, needParams)) {
@@ -102,7 +104,7 @@ public class TagsController {
             }
             int result1 = tagsMapper.deleteTags(idLis);
             //int result2 = resourceMapper.deleteVideo(vidLis);
-            if (result1 > 0 ) {
+            if (result1 > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
@@ -115,8 +117,8 @@ public class TagsController {
         }
     }
 
-    @RequestMapping(path = {"/controller/deleteTagsByV"}, method = RequestMethod.DELETE)
-    public Result deleteTagsByV(@RequestParam(value = "tag", required = false, defaultValue = "-1") int tag,@RequestBody Map<String, Object> map) {
+    @RequestMapping(path = {"/controller/deleteTagsByV/{tag}"}, method = RequestMethod.DELETE)
+    public Result deleteTagsByV(@PathVariable int tag, @RequestBody Map<String, Object> map) {
         String[] needParams = {"id"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
@@ -132,9 +134,9 @@ public class TagsController {
                 int vId = vIds.get(i).get("id");
                 vidLis.add(vId);
             }
-            int result1 = tagsMapper.deleteTagsByV(tag,vidLis);
+            int result1 = tagsMapper.deleteTagsByV(tag, vidLis);
             //int result2 = resourceMapper.deleteVideo(vidLis);
-            if (result1 > 0 ) {
+            if (result1 > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
@@ -155,7 +157,7 @@ public class TagsController {
         try {
             List<Tags> tagsLis = JSONObject.parseArray(json, Tags.class);
             int result1 = tagsMapper.addTagsByV(tagsLis);
-            if (result1 > 0 ) {
+            if (result1 > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
@@ -170,19 +172,20 @@ public class TagsController {
 
     @RequestMapping(path = {"/controller/getVideoLisByTagNobing"}, method = RequestMethod.GET)
     public Result getVideoLisByTagNobing(@RequestParam(value = "tagsId", required = false, defaultValue = "-1") int tagsId,
-                                /*@RequestBody(required = false) Map<String, Object> map,*/
-                                @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
-                                @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
+            /*@RequestBody(required = false) Map<String, Object> map,*/
+                                         @RequestParam(value = "status", required = false, defaultValue = "-1") int status,
+                                         @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
+                                         @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {
             TagsMapper mapper = sqlSession.getMapper(TagsMapper.class);
             List<Video> videoLis;
             int offset = (pageIndex - 1) * pageSize;
-            videoLis = mapper.getVideoLisByTagNobing(tagsId,pageSize,offset);
+            videoLis = mapper.getVideoLisByTagNobing(tagsId,status, pageSize, offset);
 
             if (pageSize > 0) {
-                int totalCount = mapper.getVideoCountLisByTagNobing(tagsId);
+                int totalCount = mapper.getVideoCountLisByTagNobing(tagsId,status);
                 return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videoLis);
             } else {
                 return ResultGenerator.success(videoLis);
@@ -197,8 +200,9 @@ public class TagsController {
     @RequestMapping(path = {"/controller/getVideoLisByTagbing"}, method = RequestMethod.GET)
     public Result getVideoLisByTagbing(@RequestParam(value = "tagsId", required = false, defaultValue = "-1") int tagsId,
             /*@RequestBody(required = false) Map<String, Object> map,*/
-                                         @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
-                                         @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
+                                       @RequestParam(value = "status", required = false, defaultValue = "-1") int status,
+                                       @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
+                                       @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize) {
 
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
@@ -206,10 +210,10 @@ public class TagsController {
             TagsMapper mapper = sqlSession.getMapper(TagsMapper.class);
             List<Video> videoLis;
             int offset = (pageIndex - 1) * pageSize;
-            videoLis = mapper.getVideoLisByTagbing(tagsId, pageSize, offset);
+            videoLis = mapper.getVideoLisByTagbing(tagsId,status, pageSize, offset);
 
             if (pageSize > 0) {
-                int totalCount = mapper.getVideoCountLisByTagbing(tagsId);
+                int totalCount = mapper.getVideoCountLisByTagbing(tagsId,status);
                 return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videoLis);
             } else {
                 return ResultGenerator.success(videoLis);

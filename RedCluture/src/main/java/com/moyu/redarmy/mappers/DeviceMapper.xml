@@ -11,7 +11,9 @@
         ORDER BY d.number DESC LIMIT 1
     </select>
 
-
+    <select id="isLeader" resultType="java.lang.String">
+        select count(*) from room where leader_id =#{deviceId}
+    </select>
 
 
     <select id="selectDevice" resultMap="deviceResult">
@@ -123,5 +125,6 @@
             <result property="status" column="companyStatus"/>
         </association>
     </resultMap>
+
 
 </mapper>

@@ -1,6 +1,6 @@
-tagCodes功能（属性）
+tagCodes功能（属性表）
 1.接口名称:查单个
-	url:'/controller/TagCodes/{1}',
+	url:'/controller/tagCodes/{1}',
 	请求方式:'GET',
 	参数:{
 		id:'1',
@@ -18,7 +18,7 @@ tagCodes功能（属性）
 备注:无
 
 2.接口名称:
-	url:'/controller/addTagCodes',
+	url:'/controller/tagCodes',
 	请求方式:'POST',
 	参数:{
 		{"tag":5,"tagCode":"discount"}
@@ -33,7 +33,7 @@ tagCodes功能（属性）
 备注:无
 
 3.接口名称:
-	url:'/controller/updateTagCodes',
+	url:'/controller/tagCodes',
 	请求方式:'PUT',
 	参数:{
 		{"id":5,"tag":5,"tagCode":"DISCOUNT"}
@@ -51,11 +51,11 @@ tagCodes功能（属性）
 }
 备注:无
 
-4.接口名称:
-	url:'/controller/delTagsCodes',
+4.接口名称:(为单个删除)
+	url:'/controller/tagCodes/{id}',
 	请求方式:'DELETE',
 	参数:{
-		{"id": [{"id": 6},{"id": 7},{"id": 8},{"id": 9}]}
+		id:'1',
 	}
 	返回:
 	{
@@ -70,7 +70,10 @@ tagCodes功能（属性）
 	url:'/controller/getTagCodesLis',
 	请求方式:'GET',
 	参数:{
-
+        String tagCode,
+     int status,
+     int pageIndex,
+     int pageSize
 	}
 	返回:
 	{
@@ -103,7 +106,7 @@ tagCodes功能（属性）
 }
 备注:无
 
-tag功能(绑定video,tagCodes)
+tag功能(关系表)
 1.接口名称:查单个
 	url:'/controller/tags/{id}',
 	请求方式:'GET',
@@ -123,7 +126,7 @@ tag功能(绑定video,tagCodes)
 备注:无
 
 2.接口名称:
-	url:'/controller/addTags',
+	url:'/controller/tags',
 	请求方式:'POST',
 	参数:{
 		{"videoId":3,"tag":1}
@@ -138,7 +141,7 @@ tag功能(绑定video,tagCodes)
 备注:无
 
 3.接口名称:
-	url:'/controller/updateTags',
+	url:'/controller/tags',
 	请求方式:'PUT',
 	参数:{
 		{"id":48,"videoId":4,"tag":4}
@@ -153,7 +156,7 @@ tag功能(绑定video,tagCodes)
 备注:无
 
 4.接口名称:
-	url:'/controller/delTags',
+	url:'/controller/tags',
 	请求方式:'DELETE',
 	参数:{
 		{"id": [{"id": 42},{"id": 43},{"id": 44},{"id": 48}]}
@@ -168,10 +171,11 @@ tag功能(绑定video,tagCodes)
 备注:无
 
 5.接口名称:解绑
-	url:'/controller/deleteTagsByV',
+	url:'/controller/deleteTagsByV/{tag}',
 	请求方式:'DELETE',
 	参数:{
-		tag:'1';{"id": [{"id": 8},{"id": 9},{"id": 10}]}
+		tag:'1';
+		{"id": [{"id": 8},{"id": 9},{"id": 10}]}
 	}
 
 	返回:
@@ -203,7 +207,7 @@ url:'/controller/getVideoLisByTagNobing',
 	请求方式:'GET',
 	参数:{
 
-		int tagsId =3
+		int tagsId =3,
 		int pageIndex,
         int pageSize
 	}
@@ -257,7 +261,7 @@ url:'/controller/getVideoLisByTagNobing',
 }
 备注:无
 
-9.接口名称:绑定tag值的videoLis
+9.接口名称:查询绑定tag值的videoLis
 	url:'/controller/getVideoLisByTagbing',
 	请求方式:'GET',
 	参数:{

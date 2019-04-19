@@ -50,18 +50,12 @@ public class SecureChatClientInitializer extends
 
 	SSLEngine engine = null;
 	if (SSLMODE.CA.toString().equals(tlsMode)) {
-	    engine = SecureChatSslContextFactory
-		    .getClientContext(
-			    tlsMode,
-			    null,
-			    System.getProperty("user.dir")
-				    + "/src/com/phei/netty/ssl/conf/client/cChat.jks")
+	    engine = SecureChatSslContextFactory.getClientContext(
+	    		tlsMode,null,System.getProperty("user.dir") + "/src/com/phei/netty/ssl/conf/client/cChat.jks")
 		    .createSSLEngine();
 	} else if (SSLMODE.CSA.toString().equals(tlsMode)) {
-	    engine = SecureChatSslContextFactory
-		    .getClientContext(
-			    tlsMode,
-			    System.getProperty("user.dir")
+	    engine = SecureChatSslContextFactory.getClientContext(tlsMode,
+				System.getProperty("user.dir")
 				    + "/src/com/phei/netty/ssl/conf/twoway/cChat.jks",
 			    System.getProperty("user.dir")
 				    + "/src/com/phei/netty/ssl/conf/twoway/cChat.jks")

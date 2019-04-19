@@ -53,21 +53,12 @@ public class SecureChatServerInitializer extends
 
 	SSLEngine engine = null;
 	if (SSLMODE.CA.toString().equals(tlsMode)) {
-	    engine = SecureChatSslContextFactory
-		    .getServerContext(
-			    tlsMode,
-			    System.getProperty("user.dir")
-				    + "/src/com/phei/netty/ssl/conf/client/sChat.jks",
-			    null).createSSLEngine();
+	    engine = SecureChatSslContextFactory.getServerContext(tlsMode,System.getProperty("user.dir")
+				    + "/src/com/phei/netty/ssl/conf/client/sChat.jks",null).createSSLEngine();
 	} else if (SSLMODE.CSA.toString().equals(tlsMode)) {
-	    engine = SecureChatSslContextFactory
-		    .getServerContext(
-			    tlsMode,
-			    System.getProperty("user.dir")
-				    + "/src/com/phei/netty/ssl/conf/twoway/sChat.jks",
-			    System.getProperty("user.dir")
-				    + "/src/com/phei/netty/ssl/conf/twoway/sChat.jks")
-		    .createSSLEngine();
+	    engine = SecureChatSslContextFactory.getServerContext(tlsMode,System.getProperty("user.dir")
+				+ "/src/com/phei/netty/ssl/conf/twoway/sChat.jks",System.getProperty("user.dir")
+				+ "/src/com/phei/netty/ssl/conf/twoway/sChat.jks").createSSLEngine();
 
 	    // engine = SecureChatSslContextFactory
 	    // .getServerContext(
@@ -81,10 +72,12 @@ public class SecureChatServerInitializer extends
 	    System.err.println("ERROR : " + tlsMode);
 	    System.exit(-1);
 	}
+	//mode - 如果套接字应该以“客户机”模式开始它的握手，此参数为 true
 	engine.setUseClientMode(false);
 
 	// Client auth
 	if (SSLMODE.CSA.toString().equals(tlsMode))
+		//服务端也认证客户端的身份，即双向握手
 	    engine.setNeedClientAuth(true);
 	pipeline.addLast("ssl", new SslHandler(engine));
 

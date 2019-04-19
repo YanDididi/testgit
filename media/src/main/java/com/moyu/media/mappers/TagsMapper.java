@@ -16,20 +16,23 @@ public interface TagsMapper {
     int deleteTagsByV(@Param("tag") int tag,@Param("list") List<Integer> vidLis);
     int addTagsByV(@Param("list") List<Tags> TagsLis);
     int deleteTags(@Param("list") List<Integer> idLis);
-
+    int deleteTagsByT(@Param("id") int tag);
     List<Tags> getTagsLisByV(@Param("videoId") int videoId,
                               @Param("limit") int limit,
                               @Param("offset") int offset);
 
-    List<Video> getVideoLisByTagNobing(@Param("tagsId") int tagsId, @Param("limit") int limit,
+    List<Video> getVideoLisByTagNobing(@Param("tagsId") int tagsId,
+                                       @Param("status") int status,
+                                       @Param("limit") int limit,
                                        @Param("offset") int offset);
 
-    int getVideoCountLisByTagNobing(@Param("tagsId") int tagsId) ;
+    int getVideoCountLisByTagNobing(@Param("tagsId") int tagsId,@Param("status") int status) ;
 
     List<Video> getVideoLisByTagbing( @Param("tagsId") int tagsId,
+                                      @Param("status") int status,
                                         @Param("limit") int limit,
                                         @Param("offset") int offset);
 
-    int getVideoCountLisByTagbing(@Param("tagsId") int tagsId) ;
+    int getVideoCountLisByTagbing(@Param("tagsId") int tagsId,@Param("status") int status) ;
 
 }
