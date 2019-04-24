@@ -202,7 +202,7 @@ public class DeviceController {
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         DeviceMapper mapper = sqlSession.getMapper(DeviceMapper.class);
         try {
-            if (1 == clientType) {
+            if (Device.DeviceType.EXPERIENCER.type == clientType) {
                 Integer leadId = mapper.selectLeadIdByExpId(Integer.valueOf(deviceId));
                 if (null == leadId) {
                     return ResultGenerator.fail("leadId is null");
@@ -219,7 +219,7 @@ public class DeviceController {
                     }
                 }
                 return ResultGenerator.fail("select by leadKey is null");
-            } else if (2 == clientType) {
+            } else if (Device.DeviceType.LEADER.type == clientType) {
                 String leadKey = "leader:" + deviceId + ":sync";
                 if (!StringUtils.isEmpty(redisUtil.get(leadKey))) {
                     logger.info("GET SyncEvent,from:" + leadKey);

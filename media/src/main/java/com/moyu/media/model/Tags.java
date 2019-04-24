@@ -2,12 +2,15 @@ package com.moyu.media.model;
 
 import org.apache.ibatis.type.Alias;
 
+import java.util.List;
+
 @Alias("Tags")
 public class Tags {
     int id;
     int videoId;
     int tag;
     String tagCode;
+    List<Integer> tagCodesIdLis;
 
 
     public enum Tag {
@@ -20,6 +23,14 @@ public class Tags {
         Tag(int tag) {
             this.tag = tag;
         }
+    }
+
+    public List<Integer> getTagCodesIdLis() {
+        return tagCodesIdLis;
+    }
+
+    public void setTagCodesIdLis(List<Integer> tagCodesIdLis) {
+        this.tagCodesIdLis = tagCodesIdLis;
     }
 
     public String getTagCode() {

@@ -7,6 +7,7 @@ import com.moyu.media.core.result.ResultGenerator;
 import com.moyu.media.mappers.TagsMapper;
 import com.moyu.media.model.Tags;
 import com.moyu.media.model.Video;
+import com.moyu.media.util.FileUtil;
 import com.moyu.media.util.MYUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.web.bind.annotation.*;
@@ -149,19 +150,37 @@ public class TagsController {
         }
     }
 
-    @RequestMapping(path = {"/controller/addTagsByV"}, method = RequestMethod.POST)
-    public Result addTagsByV(@RequestBody String json) {
+    @RequestMapping(path = {"/controller/editTags"}, method = RequestMethod.PUT)
+    public Result editTags(@RequestBody String json) {
         // [{"videoId": 1,"tag": 4},{"videoId": 2,"tag": 4},{"videoId": 3,"tag": 4}]
+        //{"videoId":1, "tagCodesIdLis":[ 1, 2, 3 ]}
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
+        List<Integer> vIds = new ArrayList<>();
+        List<Integer> tagCodesIds = new ArrayList<>();
+        List<Tags> tagsLis = new ArrayList<>();
         try {
-            List<Tags> tagsLis = JSONObject.parseArray(json, Tags.class);
+
+            Tags tags = JSONObject.parseObject(json, Tags.class);
+            int vId=tags.getVideoId();
+            tagCodesIds=tags.getTagCodesIdLis();
+            vIds.add(vId);
+            tagsMapper.deleteTagsByV(-1,vIds);
+            Tags tagss =null;
+
+            for (int tagCodesId:tagCodesIds) {
+                tagss=new Tags();
+                tagss.setTag(tagCodesId);
+                tagss.setVideoId(vId);
+                tagsLis.add(tagss);
+            }
             int result1 = tagsMapper.addTagsByV(tagsLis);
+
             if (result1 > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
-                return ResultGenerator.fail("add资源失败");
+                return ResultGenerator.fail("edit资源失败");
             }
         } catch (Exception e) {
             return ResultGenerator.fail(e.toString());

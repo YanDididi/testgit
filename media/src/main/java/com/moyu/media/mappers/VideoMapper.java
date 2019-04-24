@@ -12,7 +12,7 @@ public interface VideoMapper {
 
     List<Video> selectVideos(@Param("categoryId") int categoryId,
                              @Param("status") int status,
-                             @Param("list") List<Integer> list,
+                             @Param("tagCode") String tagCode,
                              @Param("limit") int limit,
                              @Param("offset") int offset);
 

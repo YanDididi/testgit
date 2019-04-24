@@ -150,42 +150,21 @@ public class ResourceController {
                                   @RequestParam(value = "status", required = false, defaultValue = "-1") int status,
                                   @RequestParam(value = "pageIndex", required = false, defaultValue = "-1") int pageIndex,
                                   @RequestParam(value = "pageSize", required = false, defaultValue = "-1") int pageSize,
-            /* @RequestParam(value = "tag", required = false, defaultValue = "-1") int tag,*/
-                                  @RequestBody(required = false) Map<String, Object> map) {
+                                  @RequestParam(value = "tagCode", required = false, defaultValue = "-1") String tagCode) {
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {
-
-            if (null != map) {
-                List<Map<String, Integer>> tags = (List<Map<String, Integer>>) map.get("tag");
-
-                List<Integer> tagLis = new ArrayList<>();
-                for (int i = 0; i < tags.size(); i++) {
-                    int tag = tags.get(i).get("tag");
-                    tagLis.add(tag);
-                }
                 VideoMapper mapper = sqlSession.getMapper(VideoMapper.class);
                 List<Video> videos;
                 int offset = (pageIndex - 1) * pageSize;
-                videos = mapper.selectVideos(categoryId, status, tagLis, pageSize, offset);
+                videos = mapper.selectVideos(categoryId, status, tagCode, pageSize, offset);
                 if (pageSize > 0) {
                     int totalCount = mapper.selectCount(categoryId, status);
                     return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videos);
                 } else {
                     return ResultGenerator.success(videos);
                 }
-            } else {
-                VideoMapper mapper = sqlSession.getMapper(VideoMapper.class);
-                List<Video> videos;
-                int offset = (pageIndex - 1) * pageSize;
-                videos = mapper.selectVideos(categoryId, status, null, pageSize, offset);
-                if (pageSize > 0) {
-                    int totalCount = mapper.selectCount(categoryId, status);
-                    return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videos);
-                } else {
-                    return ResultGenerator.success(videos);
-                }
-            }
+
         } catch (Exception e) {
             return ResultGenerator.fail(e.toString());
         } finally {

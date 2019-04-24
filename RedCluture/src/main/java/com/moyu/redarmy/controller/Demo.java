@@ -1,6 +1,7 @@
 package com.moyu.redarmy.controller;
 
 
+import com.corundumstudio.socketio.AuthorizationListener;
 import com.moyu.redarmy.core.db.DBHelper;
 import com.moyu.redarmy.core.result.Result;
 import com.moyu.redarmy.core.result.ResultGenerator;
@@ -67,6 +68,7 @@ public class Demo {
 
     @RequestMapping(path = "/delFile", method = RequestMethod.DELETE)
     public void delFile(@RequestParam("filePath") String filePath, @RequestParam("fileName") String fileName) {
+        AuthorizationListener s;
         File file = new File(filePath + "/" + fileName);
         if (file.exists() && file.isFile())
             file.delete();

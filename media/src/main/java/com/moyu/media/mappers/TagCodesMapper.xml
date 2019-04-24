@@ -48,11 +48,11 @@
         t.tagCode,
         t.create_time as createTime,
         t.update_time as updateTime,
-        t.stuatus
+        t.status
         from TagCodes t
         where 1=1
         <if test=" tagCode != -1 ">
-            and t.tagCode=#{tagCode}
+            and t.tagCode  LIKE CONCAT('%',#{tagCode},'%')
         </if>
         <if test="status!=-1">
             and t.status=#{status}

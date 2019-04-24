@@ -21,7 +21,7 @@ tagCodes功能（属性表）
 	url:'/controller/tagCodes',
 	请求方式:'POST',
 	参数:{
-		{"tag":5,"tagCode":"discount"}
+		{tagCode":"discount"}
 	}
 	返回:
 	{
@@ -36,7 +36,7 @@ tagCodes功能（属性表）
 	url:'/controller/tagCodes',
 	请求方式:'PUT',
 	参数:{
-		{"id":5,"tag":5,"tagCode":"DISCOUNT"}
+		{"id":5,"tagCode":"DISCOUNT"}
 	}
 	返回:
 	{
@@ -66,7 +66,7 @@ tagCodes功能（属性表）
 }
 备注:无
 
-5.接口名称:查多个，可分页
+5.接口名称:多个查询可无参，可分页(模糊)
 	url:'/controller/getTagCodesLis',
 	请求方式:'GET',
 	参数:{
@@ -84,29 +84,29 @@ tagCodes功能（属性表）
         {
             "id": 1,
             "tag": 1,
-            "tagCode": "RECOMMEND"
+            "tagCode": "推荐"
         },
         {
             "id": 2,
             "tag": 2,
-            "tagCode": "CHOICE"
+            "tagCode": "精选"
         },
         {
             "id": 3,
             "tag": 3,
-            "tagCode": "FREE"
+            "tagCode": "免费"
         },
         {
             "id": 4,
             "tag": 4,
-            "tagCode": "HOT"
+            "tagCode": "热门"
         }
 
     ]
 }
 备注:无
 
-tag功能(关系表)
+tags功能(关系表)
 1.接口名称:查单个
 	url:'/controller/tags/{id}',
 	请求方式:'GET',
@@ -320,3 +320,20 @@ url:'/controller/getVideoLisByTagNobing',
         ]
     }
 备注:无
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+12.editTags(先删后增,(批量videoId,tag))
