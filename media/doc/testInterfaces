@@ -21,7 +21,7 @@ tagCodes功能（属性表）
 	url:'/controller/tagCodes',
 	请求方式:'POST',
 	参数:{
-		{tagCode":"discount"}
+		{"tagCode":"discount"}
 	}
 	返回:
 	{
@@ -125,7 +125,7 @@ tags功能(关系表)
 }
 备注:无
 
-2.接口名称:
+2.接口名称:(废弃)
 	url:'/controller/tags',
 	请求方式:'POST',
 	参数:{
@@ -140,7 +140,7 @@ tags功能(关系表)
 }
 备注:无
 
-3.接口名称:
+3.接口名称:(废弃)
 	url:'/controller/tags',
 	请求方式:'PUT',
 	参数:{
@@ -170,7 +170,7 @@ tags功能(关系表)
 }
 备注:无
 
-5.接口名称:解绑
+5.接口名称:解绑(整合为editTags)
 	url:'/controller/deleteTagsByV/{tag}',
 	请求方式:'DELETE',
 	参数:{
@@ -187,7 +187,7 @@ tags功能(关系表)
 }
 备注:无
 
-7.接口名称:绑定
+6.接口名称:绑定(整合为editTags)
 	url:'/controller/addTagsByV',
 	请求方式:'POST',
 	参数:{
@@ -202,7 +202,22 @@ tags功能(关系表)
 }
 备注:无
 
-8.接口名称:未绑定tag值的veidoLis
+7.接口名称:editTags(先删后增)
+url:'/controller/editTags',
+	请求方式:'PUT',
+	参数:{
+		{"videoId":1, "tagCodesIdLis":[ 1, 2, 3 ]}
+	}
+	返回:
+	{
+    "status": 1,
+    "code": 200,
+    "msg": null,
+    "data": null
+}
+备注:无
+
+8.接口名称:未绑定tag值的videoLis
 url:'/controller/getVideoLisByTagNobing',
 	请求方式:'GET',
 	参数:{
@@ -308,14 +323,12 @@ url:'/controller/getVideoLisByTagNobing',
             {
                 "id": 1,
                 "videoId": 1,
-                "tag": 1,
-                "tagCode": "RECOMMEND"
+                "tagCode": "推荐"
             },
             {
                 "id": 2,
                 "videoId": 1,
-                "tag": 2,
-                "tagCode": "CHOICE"
+                "tagCode": "精选"
             }
         ]
     }
@@ -336,4 +349,3 @@ url:'/controller/getVideoLisByTagNobing',
 
 
 
-12.editTags(先删后增,(批量videoId,tag))

@@ -36,7 +36,7 @@ public class TagCodesController {
 
     @RequestMapping(path = {"/controller/tagCodes"}, method = RequestMethod.POST)
     public Result addTagCodes(@RequestBody Map<String, Object> map) {
-        String[] needParams = {"tag", "tagCode"};
+        String[] needParams = {"tagCode"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }

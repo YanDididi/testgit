@@ -159,7 +159,7 @@ public class ResourceController {
                 int offset = (pageIndex - 1) * pageSize;
                 videos = mapper.selectVideos(categoryId, status, tagCode, pageSize, offset);
                 if (pageSize > 0) {
-                    int totalCount = mapper.selectCount(categoryId, status);
+                    int totalCount = mapper.selectCount(categoryId, status,tagCode);
                     return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videos);
                 } else {
                     return ResultGenerator.success(videos);

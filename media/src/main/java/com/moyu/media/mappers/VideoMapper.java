@@ -8,7 +8,9 @@ import java.util.List;
 public interface VideoMapper {
     Video selectVideo(int id);
     int updateVideo(Video video);
-    int selectCount(@Param("categoryId") int categoryId, @Param("status") int status);
+    int selectCount(@Param("categoryId") int categoryId,
+                    @Param("status") int status,
+                    @Param("tagCode") String tagCode);
 
     List<Video> selectVideos(@Param("categoryId") int categoryId,
                              @Param("status") int status,
