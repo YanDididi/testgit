@@ -157,7 +157,7 @@ public class TagsController {
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
         List<Integer> vIds = new ArrayList<>();
-        List<Integer> tagCodesIds = new ArrayList<>();
+        List<Integer> tagCodesIds ;
         List<Tags> tagsLis = new ArrayList<>();
         try {
 
@@ -166,7 +166,7 @@ public class TagsController {
             tagCodesIds=tags.getTagCodesIdLis();
             vIds.add(vId);
             tagsMapper.deleteTagsByV(-1,vIds);
-            Tags tagss =null;
+            Tags tagss ;
 
             for (int tagCodesId:tagCodesIds) {
                 tagss=new Tags();

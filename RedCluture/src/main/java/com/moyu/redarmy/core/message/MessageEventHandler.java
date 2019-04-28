@@ -99,8 +99,7 @@ public class MessageEventHandler {
         }
         messageHelper.syncData(clientType, clientId, data, server);
         logger.info("收到SyncEvent,from:"+clientId);
-        String leadKey = "leader:" + clientId + ":sync";
-        redisUtil.set(leadKey,data);
+
         //saveLastEvent(client,data);
     }
 

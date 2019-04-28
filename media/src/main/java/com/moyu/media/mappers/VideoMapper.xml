@@ -86,6 +86,14 @@
         values(#{title},#{status},#{cover},#{desc},#{categoryId},#{createTime},#{updateTime},#{path},#{type})
     </insert>
 
+    <!--<insert id="insertVideo" parameterType="com.moyu.media.model.Video">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into video (`title`,status,cover,`desc`,category_id,create_time,update_time,path,`type`)
+        values(#{title},#{status},#{cover},#{desc},#{categoryId},#{createTime},#{updateTime},#{path},#{type})
+    </insert>-->
+
     <update id="updateVideo"
             parameterType="com.moyu.media.model.Video">
       update video set

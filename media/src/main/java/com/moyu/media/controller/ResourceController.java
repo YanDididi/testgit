@@ -6,6 +6,7 @@ import com.moyu.media.core.result.Result;
 import com.moyu.media.core.result.ResultGenerator;
 import com.moyu.media.mappers.TagsMapper;
 import com.moyu.media.mappers.VideoMapper;
+import com.moyu.media.model.Tags;
 import com.moyu.media.model.Video;
 import com.moyu.media.util.MYUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -42,13 +43,18 @@ public class ResourceController {
 
     @RequestMapping(path = {"/controller/video"}, method = RequestMethod.POST)
     public Result addResource(@RequestBody Map<String, Object> map) {
+        //{"title":"7777","path":"7777","categoryId":7,"tagCodesId":[{"tagCodesId": 1},{"tagCodesId": 2},{"tagCodesId": 3},{"tagCodesId": 4}]}
         String[] needParams = {"title", "path", "categoryId"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
+        VideoMapper resourceMapper = sqlSession.getMapper(VideoMapper.class);
+        TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
+        List<Tags> tagsLis = new ArrayList<>();
+
         try {
-            VideoMapper resourceMapper = sqlSession.getMapper(VideoMapper.class);
+
             Video video = new Video();
             video.setCategoryId(MYUtil.ParseInt(MYUtil.GetParam(map, "categoryId")));
             video.setCover(MYUtil.GetParam(map, "cover"));
@@ -58,7 +64,23 @@ public class ResourceController {
             video.setPath(MYUtil.GetParam(map, "path"));
             video.setTitle(MYUtil.GetParam(map, "title"));
             video.setType(MYUtil.GetParam(map, "type"));
-            if (resourceMapper.insertVideo(video) > 0) {
+            int result1 = resourceMapper.insertVideo(video);
+
+            String[] needParam = {"tagCodesId"};
+            if (MYUtil.IsExistParams(map, needParam)) {
+                List<Map<String, Integer>> tcIds = (List<Map<String, Integer>>) map.get("tagCodesId");
+                Tags tagss;
+                for (int i = 0; i < tcIds.size(); i++) {
+                    tagss = new Tags();
+                    int tcId = tcIds.get(i).get("tagCodesId");
+                    tagss.setTag(tcId);
+                    tagss.setVideoId(video.getId());
+                    tagsLis.add(tagss);
+                }
+                tagsMapper.addTagsByV(tagsLis);
+            }
+
+            if (result1 > 0 ) {
                 sqlSession.commit();
                 return ResultGenerator.success();
             } else {
@@ -73,13 +95,16 @@ public class ResourceController {
 
     @RequestMapping(path = {"/controller/video"}, method = RequestMethod.PUT)
     public Result updateResource(@RequestBody Map<String, Object> map) {
+        //{"id":9,"title":"7777","path":"7777","categoryId":7,"tagCodesId":[{"tagCodesId": 1},{"tagCodesId": 2},{"tagCodesId": 3},{"tagCodesId": 4}]}
         String[] needParams = {"id", "title", "path", "cover", "categoryId"};
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
-        try {
-            VideoMapper resourceMapper = sqlSession.getMapper(VideoMapper.class);
+        VideoMapper resourceMapper = sqlSession.getMapper(VideoMapper.class);
+        TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
+            try {
+
             Video resource = new Video();
             resource.setId(MYUtil.ParseInt(MYUtil.GetParam(map, "id")));
             resource.setCover(MYUtil.GetParam(map, "cover"));
@@ -89,7 +114,28 @@ public class ResourceController {
             resource.setType(MYUtil.GetParam(map, "type"));
             resource.setPath(MYUtil.GetParam(map, "path"));
             resource.setCategoryId(MYUtil.ParseInt(MYUtil.GetParam(map, "categoryId")));
-            if (resourceMapper.updateVideo(resource) > 0) {
+            int result1 = resourceMapper.updateVideo(resource);
+
+            String[] needParam = {"tagCodesId"};
+            if (MYUtil.IsExistParams(map, needParam)) {
+                List<Tags> tagsLis = new ArrayList<>();
+                List<Integer> vIds =new ArrayList<>();
+                vIds.add(resource.getId());
+                tagsMapper.deleteTagsByV(-1,vIds);
+
+                List<Map<String, Integer>> tcIds = (List<Map<String, Integer>>) map.get("tagCodesId");
+                Tags tagss;
+                for (int i = 0; i < tcIds.size(); i++) {
+                    tagss = new Tags();
+                    int tcId = tcIds.get(i).get("tagCodesId");
+                    tagss.setTag(tcId);
+                    tagss.setVideoId(resource.getId());
+                    tagsLis.add(tagss);
+                }
+                tagsMapper.addTagsByV(tagsLis);
+            }
+
+            if (result1 > 0 ) {
                 sqlSession.commit();
                 return ResultGenerator.success(resource);
             } else {
@@ -108,7 +154,9 @@ public class ResourceController {
         if (!MYUtil.IsExistParams(map, needParams)) {
             return ResultGenerator.fail("params empty");
         }
-        Video video;String videoPath;String coverPath;
+        Video video;
+        String videoPath;
+        String coverPath;
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         VideoMapper resourceMapper = sqlSession.getMapper(VideoMapper.class);
         TagsMapper tagsMapper = sqlSession.getMapper(TagsMapper.class);
@@ -118,20 +166,21 @@ public class ResourceController {
 
             String targetPath = fileConfig.getFilePath();
             int indexb = targetPath.lastIndexOf(System.getProperty("file.separator"));
-            String tPath = targetPath.substring(0, indexb)+targetPath.substring(indexb+1, targetPath.length());
+            String tPath = targetPath.substring(0, indexb) + targetPath.substring(indexb + 1, targetPath.length());
 
             List<Integer> vidLis = new ArrayList<>();
             for (int i = 0; i < vIds.size(); i++) {
                 int vId = vIds.get(i).get("id");
                 video = resourceMapper.selectVideo(vId);
-                if(null != video){
-                    videoPath=tPath+video.getPath();coverPath=tPath+video.getCover();
+                if (null != video) {
+                    videoPath = tPath + video.getPath();
+                    coverPath = tPath + video.getCover();
                     FileUtil.delFile(videoPath);
                     FileUtil.delFile(coverPath);
                 }
                 vidLis.add(vId);
             }
-            tagsMapper.deleteTagsByV(-1,vidLis);
+            tagsMapper.deleteTagsByV(-1, vidLis);
             if (resourceMapper.deleteVideo(vidLis) > 0) {
                 sqlSession.commit();
                 return ResultGenerator.success();
@@ -154,16 +203,16 @@ public class ResourceController {
 
         SqlSession sqlSession = DBHelper.getSqlSessionFacttory().openSession();
         try {
-                VideoMapper mapper = sqlSession.getMapper(VideoMapper.class);
-                List<Video> videos;
-                int offset = (pageIndex - 1) * pageSize;
-                videos = mapper.selectVideos(categoryId, status, tagCode, pageSize, offset);
-                if (pageSize > 0) {
-                    int totalCount = mapper.selectCount(categoryId, status,tagCode);
-                    return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videos);
-                } else {
-                    return ResultGenerator.success(videos);
-                }
+            VideoMapper mapper = sqlSession.getMapper(VideoMapper.class);
+            List<Video> videos;
+            int offset = (pageIndex - 1) * pageSize;
+            videos = mapper.selectVideos(categoryId, status, tagCode, pageSize, offset);
+            if (pageSize > 0) {
+                int totalCount = mapper.selectCount(categoryId, status, tagCode);
+                return ResultGenerator.successPage(pageIndex, pageSize, totalCount, videos);
+            } else {
+                return ResultGenerator.success(videos);
+            }
 
         } catch (Exception e) {
             return ResultGenerator.fail(e.toString());

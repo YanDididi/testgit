@@ -53,7 +53,7 @@ public class MessageHelper {
             }
             default: {
 //                String key = "Device:" + clientId + ":Experiencer";
-                String key = redisUtil.generateKey(clientId,RedisUtil.DEVICE_USER);
+                String key = redisUtil.generateKey(clientId, RedisUtil.DEVICE_USER);
                 Map<String, Object> map = new HashMap<>();
                 map.put("sessionId", sessionId);
                 redisUtil.hmset(key, map);
@@ -102,7 +102,7 @@ public class MessageHelper {
                 break;
             }
             default: {
-                key=redisUtil.generateKey(clientId,RedisUtil.DEVICE_USER);
+                key = redisUtil.generateKey(clientId, RedisUtil.DEVICE_USER);
                 break;
             }
         }
@@ -116,22 +116,26 @@ public class MessageHelper {
     }
 
     public void syncData(int clientType, String clientId, Object data, SocketIOServer server) {
+        String leadKey = "leader:" + clientId + ":sync";
         switch (clientType) {
             case Command.CLIENT_EXPERIENCER: {
                 break;
             }
             case Command.CLIENT_LEADER: {
-                dispatchDataToExperiencers(clientId,server,data);
+                dispatchDataToExperiencers(clientId, server, data);
+                redisUtil.set(leadKey,data);
                 break;
             }
             case Command.CLIENT_CONTROLLER: {
                 String deviceKey = redisUtil.generateKey(clientId, RedisUtil.DEVICE_USER);
                 Map<Object, Object> map = redisUtil.hmget(deviceKey);
-                if(map!=null){
-                    SocketIOClient leaderClient=server.getClient(UUID.fromString(map.get("sessionId").toString()));
-                    leaderClient.sendEvent("SyncEvent", data);
+                if (map != null && map.get("sessionId") != null) {
+                    SocketIOClient leaderClient = server.getClient(UUID.fromString(map.get("sessionId").toString()));
+                    if (leaderClient != null)
+                        leaderClient.sendEvent("SyncEvent", data);
+                    dispatchDataToExperiencers(clientId, server, data);
+                    redisUtil.set(leadKey,data);
                 }
-                dispatchDataToExperiencers(clientId,server,data);
                 break;
             }
             default: {
@@ -140,7 +144,7 @@ public class MessageHelper {
         }
     }
 
-    private void dispatchDataToExperiencers(String leaderId,SocketIOServer server,Object data){
+    private void dispatchDataToExperiencers(String leaderId, SocketIOServer server, Object data) {
         String key = redisUtil.generateKey(leaderId, RedisUtil.ROOM_EXPERIENCERS);
         Set experiencers = redisUtil.sGet(key);
         if (experiencers != null) {
@@ -153,8 +157,10 @@ public class MessageHelper {
                         if (client != null) {
                             client.sendEvent("SyncEvent", data);
                         }
+
                     }
                 }
+
             }
         }
     }
@@ -193,26 +199,25 @@ public class MessageHelper {
         }
     }
 
-    public int getClientType(String clientId){
-       Object clientType= redisUtil.get(redisUtil.generateKey(clientId,RedisUtil.TYPE_DEVICE));
-       return clientType==null?Device.DeviceType.EXPERIENCER.type:(int)clientType;
-    }
-    public int getClientType(int clientId){
-        Object clientType= redisUtil.get(redisUtil.generateKey(String.valueOf(clientId),RedisUtil.TYPE_DEVICE));
-        return clientType==null?Device.DeviceType.EXPERIENCER.type:(int)clientType;
+    public int getClientType(String clientId) {
+        Object clientType = redisUtil.get(redisUtil.generateKey(clientId, RedisUtil.TYPE_DEVICE));
+        return clientType == null ? Device.DeviceType.EXPERIENCER.type : (int) clientType;
     }
 
-    public void SyncBaseInfo(int clientId, BaseInfo baseInfo,SocketIOServer server){
-        UUID clientSessionId=getSessionId(Device.DeviceType.USER.type,String.valueOf(clientId));
-        if(clientSessionId!=null){
+    public int getClientType(int clientId) {
+        Object clientType = redisUtil.get(redisUtil.generateKey(String.valueOf(clientId), RedisUtil.TYPE_DEVICE));
+        return clientType == null ? Device.DeviceType.EXPERIENCER.type : (int) clientType;
+    }
+
+    public void SyncBaseInfo(int clientId, BaseInfo baseInfo, SocketIOServer server) {
+        UUID clientSessionId = getSessionId(Device.DeviceType.USER.type, String.valueOf(clientId));
+        if (clientSessionId != null) {
             SocketIOClient client = server.getClient(clientSessionId);
             if (client != null) {
                 client.sendEvent("BaseInfoEvent", JSONObject.toJSON(baseInfo));
             }
         }
     }
-
-
 
 
 }

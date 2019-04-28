@@ -2,6 +2,8 @@ package com.moyu.media.model;
 
 import org.apache.ibatis.type.Alias;
 
+import java.util.List;
+
 @Alias("Video")
 public class Video {
     int id;
@@ -13,7 +15,10 @@ public class Video {
     int updateTime;
     int categoryId;
     String type;
+    List<Integer> tagCodesIdLis;
+
     int status=1;
+
 
     public int getId() {
         return id;
@@ -89,6 +94,14 @@ public class Video {
 
     public int getStatus() {
         return status;
+    }
+
+    public List<Integer> getTagCodesIdLis() {
+        return tagCodesIdLis;
+    }
+
+    public void setTagCodesIdLis(List<Integer> tagCodesIdLis) {
+        this.tagCodesIdLis = tagCodesIdLis;
     }
 
     public void setStatus(int status) {

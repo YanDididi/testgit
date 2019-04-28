@@ -106,6 +106,59 @@ tagCodes功能（属性表）
 }
 备注:无
 
+
+video功能修改
+1.接口名称:(整合了editTags接口)
+	url:'/controller/video',
+	请求方式:'POST',
+	参数:{
+	"title":"7777",
+	"path":"7777",
+	"categoryId":7,
+	"tagCodesId":[{"tagCodesId": 1},{"tagCodesId": 2},{"tagCodesId": 3},{"tagCodesId": 4}]
+	}
+	返回:{
+  "status": 1,
+  "code": 200,
+  "msg": null,
+  "data": {
+    "id": 11,
+    "videoId": 6,
+    "tag": 4
+  }
+}
+
+2.接口名称:(整合了editTags接口)
+	url:'/controller/video',
+	请求方式:'PUT',
+	参数:{
+
+	"id":9
+	"title":"999",
+	"path":"999",
+	"categoryId":999,
+	"tagCodesId":[{"tagCodesId": 1},{"tagCodesId": 2}]
+	}
+	返回:{
+           "status": 1,
+           "code": 200,
+           "msg": null,
+           "data": {
+               "id": 9,
+               "title": "999",
+               "path": "999",
+               "cover": "999",
+               "desc": "",
+               "createTime": 0,
+               "updateTime": 1556244153,
+               "categoryId": 999,
+               "type": "",
+               "tagCodesIdLis": null,
+               "status": 1
+           }
+       }
+
+
 tags功能(关系表)
 1.接口名称:查单个
 	url:'/controller/tags/{id}',
@@ -204,17 +257,17 @@ tags功能(关系表)
 
 7.接口名称:editTags(先删后增)
 url:'/controller/editTags',
-	请求方式:'PUT',
-	参数:{
-		{"videoId":1, "tagCodesIdLis":[ 1, 2, 3 ]}
-	}
-	返回:
-	{
-    "status": 1,
-    "code": 200,
-    "msg": null,
-    "data": null
-}
+   	请求方式:'PUT',
+   	参数:{
+   		{"videoId":1, "tagCodesIdLis":[ 1, 2, 3 ]}
+   	}
+   	返回:
+   	{
+       "status": 1,
+       "code": 200,
+       "msg": null,
+       "data": null
+   }
 备注:无
 
 8.接口名称:未绑定tag值的videoLis
