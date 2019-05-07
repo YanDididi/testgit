@@ -49,8 +49,8 @@ public class MYUtil {
     public static String getExtensionName(String filename) {
         if ((filename != null) && (filename.length() > 0)) {
             int dot = filename.lastIndexOf('.');
-            if ((dot >-1) && (dot < (filename.length() - 1))) {
-                return filename.substring(dot+1);
+            if ((dot > -1) && (dot < (filename.length() - 1))) {
+                return filename.substring(dot + 1);
             }
         }
         return filename;
@@ -59,7 +59,7 @@ public class MYUtil {
     public static String getFileNameNoEx(String filename) {
         if ((filename != null) && (filename.length() > 0)) {
             int dot = filename.lastIndexOf('.');
-            if ((dot >-1) && (dot < (filename.length()))) {
+            if ((dot > -1) && (dot < (filename.length()))) {
                 return filename.substring(0, dot);
             }
         }
@@ -69,8 +69,8 @@ public class MYUtil {
     public static String getBaseFileCode(String filecode) {
         if ((filecode != null) && (filecode.length() > 0)) {
             int dot = filecode.indexOf(',');
-            if ((dot >-1) && (dot < (filecode.length()))) {
-                return filecode.substring(dot+1);
+            if ((dot > -1) && (dot < (filecode.length()))) {
+                return filecode.substring(dot + 1);
             }
         }
         return filecode;
@@ -80,10 +80,23 @@ public class MYUtil {
         if ((filecode != null) && (filecode.length() > 0)) {
             int dot = filecode.indexOf(';');
             int dos = filecode.indexOf('/');
-            if ((dot >-1) && (dot < (filecode.length()))&&(dos >-1) && (dos < (filecode.length())) ) {
-                return filecode.substring(dos+1,dot);
+            if ((dot > -1) && (dot < (filecode.length())) && (dos > -1) && (dos < (filecode.length()))) {
+                return filecode.substring(dos + 1, dot);
             }
         }
         return filecode;
     }
+
+    public static String getFileName(String filecode) {
+        if ((filecode != null) && (filecode.length() > 0)) {
+
+            int dot = filecode.lastIndexOf('/');
+            if ((dot > -1) && (dot < (filecode.length()))) {
+                return filecode.substring(dot + 1);
+            }
+        }
+        return filecode;
+    }
+
+
 }

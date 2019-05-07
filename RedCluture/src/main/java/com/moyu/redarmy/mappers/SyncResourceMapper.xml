@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moyu.redarmy.mappers.SyncResourceMapper">
+
+    <insert id="insertSyncResourceLis"
+            parameterType="com.moyu.redarmy.model.SyncResource"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into syncresource (`name`,status,create_time,update_time,`desc`,category_id,md5,path,syncversion_id) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.name},#{item.status},#{item.createTime},#{item.updateTime},#{item.desc},#{item.categoryId},#{item.md5},#{item.path},#{item.syncVersionId})
+        </foreach>
+    </insert>
+
+</mapper>
